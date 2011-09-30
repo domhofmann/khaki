@@ -1,4 +1,4 @@
-Shorthand language for iOS development, "compiles" to Objective-C
+Shorthand language for iOS development, compiles to Objective-C
 
 ```coffee
 someView = UIView!!
