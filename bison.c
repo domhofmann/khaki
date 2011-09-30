@@ -39,6 +39,8 @@
 '@'                                 return '@'
 '('                                 return '('
 ')'                                 return ')'
+'['                                 return '['
+']'                                 return ']'
 ","                                 return ','
 <<EOF>>                             return 'EOF'
 .                                   return 'INVALID'
@@ -69,7 +71,7 @@ expressions:
     
 e
     : e '+' e
-      {$$ = $1+'+'+$3;}
+      {$$ = $1 + ' + ' + $3;}
     | WORD '=' e
     {{
       if ($e.expr)
@@ -88,7 +90,9 @@ e
     ;
 
 message
-    : WORD selector_args
+    : '(' message ')'
+      {$$ = '[' + $2 + ']';}
+    | WORD selector_args
       {$$ = '[' + $1 + $2 + ']';}
     | WORD SELECTOR_NOARG
     ;
@@ -137,7 +141,9 @@ shortcut
     ;
     
 construct
-    : WORD '!' selector_args
+    : '(' construct ')'
+    { $$ = $2; }
+    | WORD '!' selector_args
     {{
       $$ = {
         type: $1, 

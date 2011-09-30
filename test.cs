@@ -1,9 +1,9 @@
-NSNumber! withNumber:2
-3+3
-@(400, 400)
-@(400, 400, 400, 400)
-test = NSNumber numberWithInt:3 foo:bar
-test = @(400, 400)
-NSNumber numberWithRect:@(400, 400)
-t = NSNumber numberWithRect:@(400, 400) foo:@(100, 100, 100, 100)
-t = NSNumber! withRect:@(123, 123)
+NSFoo! withBar:1
+1 + 2
+@(123, 123)
+@(123, 123, 123, 123)
+test = NSFoo fooWithBar:1 foo:bar
+test = @(123, 123)
+NSNumber fooWithBar:@(123, 123)
+
+req = NSURLRequest! withURL:(NSURL! withString:someString) withPolicy:somePolicy
