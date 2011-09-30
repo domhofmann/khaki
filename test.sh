@@ -1,2 +1,2 @@
-jison bison.c
-node bison.js test.cs
+jison khaki.c
+node khaki.js test.khaki

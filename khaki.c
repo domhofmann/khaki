@@ -24,11 +24,14 @@
 \n\s*                               return 'NEWLINE'
 \;+                                 /* skip semicolons */
 
+\"(\\.|[^\\"])*\"                   return 'STRING_LITERAL'//"
+\'(\\.|[^\\"])*\'                   return 'STRING_LITERAL'//'
+
 \s*\=\s*                            return '='
 
 //\s([a-zA-Z]+\:+.*)                return 'SELECTOR'
-\s([a-zA-Z]+\:{1})                  return 'SELECTOR_ARG'
-\s([a-zA-Z]+)                       return 'SELECTOR_NOARG'
+\s+([a-zA-Z]+\:{1})                 return 'SELECTOR_ARG'
+\s+([a-zA-Z]+)                      return 'SELECTOR_NOARG'
 
 \s+                                 /* skip whitespace */
 
@@ -59,7 +62,7 @@
 
 program
     : expressions
-      { console.log("\n\nALL DONE!"); }
+      { console.log("\n\nFinished compiling"); }
     ;
     
 expressions:
@@ -83,6 +86,13 @@ e
     | construct
     | message
     | shortcut
+    | STRING_LITERAL
+    {{
+      $$ = {
+        type: 'NSString',
+        expr: '@"' + yytext.substr(1).slice(0, -1) +'"'
+      }
+    }}
     | WORD
       {$$ = yytext;}
     | NUMBER
@@ -143,6 +153,20 @@ shortcut
 construct
     : '(' construct ')'
     { $$ = $2; }
+    | WORD '!' '!' selector_args
+    {{
+      $$ = {
+        type: $1, 
+        expr: '[[' + $1 + ' alloc] init' + $3.substr(1).capitalize() + ']'
+      };
+    }}
+    | WORD '!' '!'
+    {{
+      $$ = {
+        type: $1,
+        expr: '[[' + $1 + ' alloc] init]'
+      };
+    }}
     | WORD '!' selector_args
     {{
       $$ = {
