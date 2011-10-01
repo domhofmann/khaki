@@ -1,4 +1,5 @@
 someView = UIView!!
 someView setFrame:@(0, 0, 200, 200)
 url = 'http://google.com'
+url = 'http://google.com'
 req = NSURLRequest! withURL:(NSURL! withString:someString)

@@ -1,7 +1,3 @@
-
-/* description: Parses end executes mathematical expressions. */
-
-
 %{
   
   String.prototype.capitalize = function() {
@@ -25,7 +21,7 @@
 \;+                                 /* skip semicolons */
 
 \"(\\.|[^\\"])*\"                   return 'STRING_LITERAL'//"
-\'(\\.|[^\\"])*\'                   return 'STRING_LITERAL'//'
+\'(\\.|[^\\'])*\'                   return 'STRING_LITERAL'//'
 
 \s*\=\s*                            return '='
 
@@ -56,7 +52,7 @@
 %left '='
 %left ')'
 
-/*%start program*/
+%start program
 
 %% /* language grammar */
 
