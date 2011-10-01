@@ -49,7 +49,7 @@
 ")"                                 return ')'
 "["                                 return '['
 "]"                                 return ']'
-","                                 return ','
+","\s*                              return ','
 <<EOF>>                             return 'EOF'
 [\#]+.+                             return 'COMMENT'
 .                                   return 'INVALID'
@@ -105,11 +105,23 @@ e
     }}
     | construct
     | message
+    | function
     | shortcut
     | WORD
       {$$ = yytext;}
     | NUMBER
       {$$ = yytext;}
+    ;
+    
+e_list
+    : e_list e ','
+      {$$ = $1 + ', ' + expr($2);}
+    | e_list e
+      {$$ = $1 + ', ' + expr($2);}
+    | e ','
+      {$$ = expr($1)}
+    | e 
+      {$$ = expr($1);}
     ;
 
 message
@@ -125,6 +137,13 @@ message
       {$$ = '[@"' + $STRING_LITERAL.substr(1).slice(0, -1) + '"' + $2 + ']';}
     | WORD SELECTOR_NOARG
       {$$ = '[' + $1 + $2 + ']';}
+    ;
+
+function
+    : WORD '(' e_list ')'
+      {$$ = $1 + $2 + $3 + $4;}
+    | WORD '(' ')'
+      {$$ = $1 + $2 + $3;}
     ;
 
 selector_args
