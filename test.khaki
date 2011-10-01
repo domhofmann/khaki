@@ -1,5 +1,18 @@
-someView = UIView!!
+# variable assignment and autoreleased constructor
+someView = UIView!
+
+# selector invocation and CGRect shortcut
 someView setFrame:@(0, 0, 200, 200)
-url = 'http://google.com'
-url = 'http://google.com'
-req = NSURLRequest! withURL:(NSURL! withString:someString)
+
+# conditionals, string literals, and nested selectors
+if someCondition
+	path = 'http://google.com'
+	req = NSURLRequest! withURL:(NSURL! withString:path)
+else
+ 	uppercase = 'THIS TEXT IS CAPITALIZED'
+	lowercase = capitalizedText lowercaseString
+	hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
+end
+
+# current status
+status = 'pre-pre-pre-alpha'
