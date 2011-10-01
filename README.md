@@ -18,7 +18,7 @@ else
 end
 
 # current status
-status = 'pre-pre-pre-alpha'
+NSLog('Khaki is pre-pre-pre-alpha')
 ```
 
 becomes this:
@@ -34,5 +34,5 @@ NSString *uppercase = @"THIS TEXT IS CAPITALIZED";
 id lowercase = [capitalizedText lowercaseString];
 id hello = [[@"hello/world" componentsSeparatedByString:@"/"] objectAtIndex:2];
 }
-NSString *status = @"pre-pre-pre-alpha";
+NSLog(@"Khaki is pre-pre-pre-alpha", nil);
 ```
