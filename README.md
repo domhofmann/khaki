@@ -34,5 +34,5 @@ NSString *uppercase = @"THIS TEXT IS CAPITALIZED";
 id lowercase = [capitalizedText lowercaseString];
 id hello = [[@"hello/world" componentsSeparatedByString:@"/"] objectAtIndex:2];
 }
-NSLog(@"Khaki is pre-pre-pre-alpha", nil);
+NSLog(@"Khaki is pre-pre-pre-alpha");
 ```
