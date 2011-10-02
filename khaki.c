@@ -23,6 +23,7 @@
 %lex
 %%
 
+"`".*"`"                            return 'ESCAPE'
 \n\s*                               return 'NEWLINE'
 \;+                                 /* skip semicolons */
 
@@ -36,7 +37,7 @@
 "end"                               return 'END'
 
 \s+([a-zA-Z]+\:{1})                 return 'SELECTOR_ARG'
-\s+([a-zA-Z]+)                      return 'SELECTOR_NOARG'
+//\s+([a-zA-Z]+)                    return 'SELECTOR_NOARG'
 
 \s+                                 /* skip whitespace */
 
@@ -49,6 +50,7 @@
 ")"                                 return ')'
 "["                                 return '['
 "]"                                 return ']'
+"~"                                 return '~'
 ","\s*                              return ','
 <<EOF>>                             return 'EOF'
 [\#]+.+                             return 'COMMENT'
@@ -67,27 +69,31 @@
 // grammar
 
 program
-    : expressions
-    { console.log("\n" + $expressions); console.log("\nFinished compiling"); }
+    : lines
+    { console.log("\n" + $lines); console.log("\nFinished compiling"); }
     ;
     
-expressions
+lines
     : 
-    | expressions COMMENT NEWLINE
+    | lines COMMENT NEWLINE
       { $$ = expr($1) + ''; }
-    | expressions IF e NEWLINE expressions ELSE NEWLINE expressions END NEWLINE
+    | lines IF e NEWLINE lines ELSE NEWLINE lines END NEWLINE
       { $$ = expr($1) + 'if (' + $3 + ") {\n" + $5 + "} else {\n" + $8 + "}\n"; }
-    | expressions IF e NEWLINE expressions END NEWLINE
+    | lines IF e NEWLINE lines END NEWLINE
       { $$ = expr($1) + 'if (' + $3 + ") {\n" + $5 + "}\n"; }
-    | expressions e NEWLINE
-      { $$ = expr($1) + expr($2) + ";\n"; }
-    | expressions e EOF
-      { $$ = expr($1) + expr($2) + ";\n"; }
+    | lines e NEWLINE
+      { $$ = expr($1) + expr($2) + ($2.suffix != undefined ? $2.suffix : ';') + "\n"; }
+    | lines e EOF
+      { $$ = expr($1) + expr($2) + ($2.suffix != undefined ? $2.suffix : ';') + "\n"; }
     ;
     
 e
     : e '+' e
       {$$ = $1 + ' + ' + $3;}
+    | WORD '~' WORD '=' e
+      {$$ = $1 + ' ' + $3 + ' = ' + expr($5);}
+    | WORD WORD '=' e
+      {$$ = $1 + ' *' + $2 + ' = ' + expr($4);}
     | WORD '=' e
     {{
       if ($e.expr)
@@ -95,6 +101,15 @@ e
         else $$ = $3.type + ' ' + $1 + ' = ' + $3.expr;
       else
         if (!$e.scalar) $$ = 'id ' + $1 + ' = ' + $3;
+    }}
+    | ESCAPE
+    {{ 
+      $$ = {
+        type: 'id',
+        scalar: true,
+        expr: expr($1).substr(1).slice(0, -1),
+        suffix: '' 
+      }
     }}
     | STRING_LITERAL
     {{
@@ -127,16 +142,18 @@ e_list
 message
     : '(' message ')'
       {$$ = $2;}
+    | message WORD
+      {$$ = '[' + $1 + ' ' + $2 + ']';}
     | e selector_args
       {$$ = '[' + expr($1) + $2 + ']';}
     | STRING_LITERAL selector_args
       {$$ = '[@"' + $STRING_LITERAL.substr(1).slice(0, -1) + '"' + $2 + ']';}
     | WORD selector_args
       {$$ = '[' + $1 + $2 + ']';}
-    | STRING_LITERAL SELECTOR_NOARG
-      {$$ = '[@"' + $STRING_LITERAL.substr(1).slice(0, -1) + '"' + $2 + ']';}
-    | WORD SELECTOR_NOARG
-      {$$ = '[' + $1 + $2 + ']';}
+    | STRING_LITERAL WORD
+      {$$ = '[@"' + $STRING_LITERAL.substr(1).slice(0, -1) + '" ' + $2 + ']';}
+    | WORD WORD
+      {$$ = '[' + $1 + ' ' + $2 + ']';}
     ;
 
 function

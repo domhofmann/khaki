@@ -1,4 +1,6 @@
-Shorthand language for iOS development, compiles to Objective-C
+A shorthand language for iOS development. 
+
+This:
 
 ```coffee
 # variable assignment and autoreleased constructor
@@ -17,11 +19,20 @@ else
 	hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
 end
 
+# strict typing
+SomeType somePointer = SomeClass giveMeSomeType
+uint ~somePrimitive = 100
+
+# fallback to inline Objective-C if needed
+foo = 'foo'
+`NSString *bar = @"bar";`
+baz = `[foo stringByAppendingString:bar]`
+
 # current status
 NSLog('Khaki is pre-pre-pre-alpha')
 ```
 
-becomes this:
+compiles to this:
 
 ```objective-c
 UIView *someView = [[[UIView alloc] init] autorelease];
@@ -34,5 +45,10 @@ NSString *uppercase = @"THIS TEXT IS CAPITALIZED";
 id lowercase = [capitalizedText lowercaseString];
 id hello = [[@"hello/world" componentsSeparatedByString:@"/"] objectAtIndex:2];
 }
+SomeType *somePointer = [SomeClass giveMeSomeType];
+uint somePrimitive = 100;
+NSString *foo = @"foo";
+NSString *bar = @"bar";
+id baz = [foo stringByAppendingString:bar];
 NSLog(@"Khaki is pre-pre-pre-alpha");
 ```
