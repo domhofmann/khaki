@@ -1,4 +1,7 @@
-foo bar:baz
+foo = "someString" lowercaseString
+bar = "someString" lowercaseString uppercaseString
+baz = foo stringByAppendingString:bar
+
 someInt = 1 + 1
 someFloat = 1.0
 someString = "test"
@@ -8,8 +11,8 @@ if foo
   someOtherFloat = 1.0 + 1.0
   someFloat = 2.0
 else if bar
-  foo = 'hello'
-  bar = baz
+  hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
+  foo = (foo bar) baz
 else
   bar = baz
   if nestedIf

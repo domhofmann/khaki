@@ -1,3 +1,5 @@
+var sys = require('sys');
+
 var parser = require('./grammar').parser;
 var Lexer = require('./lexer').Lexer;
 
@@ -20,7 +22,7 @@ parser.lexer = {
 
 parser.yy = require('./types');
 console.log(source);
-//new Lexer().tokenize(source)
+// console.log('\n\n=== tokenize ===>\n\n' + sys.inspect(new Lexer().tokenize(source)) + '\n\n');
 var compiled = parser.parse(new Lexer().tokenize(source));
 console.log('\n\n=== compiled ===>\n\n' + compiled + '\n');
 

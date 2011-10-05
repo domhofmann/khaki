@@ -22,8 +22,6 @@
   
 %}
 
-%right '('
-%left ')'
 %start program
 %%
 
@@ -56,9 +54,7 @@ terminator
   ;
   
 expression
-  : '(' expression ')'
-    { $$ = $expression }
-  | assignment
+  : assignment
   | message
   | operation
   | If
@@ -113,6 +109,18 @@ assignment
 message
   : value selector_args
     { $$ = yy._Message({target: $value, args: $selector_args}) }
+  | simple_message
+  ;
+  
+simple_message
+  : WORD WORD
+    { $$ = yy._Message({target: $WORD1, message: $WORD2}) }
+  | literal WORD
+    { $$ = yy._Message({target: $literal, message: $WORD}) }
+  | parenthetical WORD
+    { $$ = yy._Message({target: $parenthetical, message: $WORD}) }
+  | message WORD
+    { $$ = yy._Message({target: $message, message: $WORD}) }
   ;
   
 selector_args
@@ -129,6 +137,12 @@ selector_arg
 value
   : WORD
   | literal
+  | parenthetical
+  ;
+  
+parenthetical
+  : '(' body ')'
+  { $$ = $body.replace(/\t/g, '') }
   ;
 
 literal

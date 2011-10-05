@@ -25,12 +25,21 @@ exports._Message = function (opts) {
   
   var target = opts.target;
   var args = opts.args;
+  var message = opts.message;
   
-  var stubs = args.map(function (arg) {
-    return arg.arg + code(arg.value);
-  }).join('');
+  var stubs;
   
-  return '[' + target + stubs + ']';
+  if (args) {
+    stubs = args.map(function (arg) {
+      return arg.arg + code(arg.value);
+    }).join('');
+  } else {
+    stubs = ' ' + code(message);
+  }
+  
+  return {
+    code: '[' + code(target) + stubs + ']'
+  };
   
 }
 
