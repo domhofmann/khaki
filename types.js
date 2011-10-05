@@ -42,9 +42,6 @@ exports._Assignment = function (opts) {
   var expression = opts.expression;
   var reassign = false;
   
-  
-  console.log(scope);
-  
   scope.forEach(function (tier) {
     tier.forEach(function (assignment) {
       if (identifier && assignment.identifier == identifier) reassign = true;

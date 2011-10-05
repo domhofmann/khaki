@@ -10,6 +10,10 @@ Lexer.prototype.addToken = function (tag, value) {
   this.tokens.push([tag, value, this.line]);
 }
 
+Lexer.prototype.lastToken = function () {
+  return this.tokens[this.tokens.length - 1][0];
+}
+
 Lexer.prototype.tokenize = function (code) {
   // strip trailing spaces
   code = code.replace(/\r/g, '').replace(/\s+$/g, '');
@@ -57,6 +61,11 @@ Lexer.prototype.keywordToken = function () {
   if (!result) return 0;
   
   var keyword = result[1].replace(/\ */g, '');
+  
+  if (keyword == 'else' && this.lastToken() == 'NEWLINE') {
+    console.log('POP');
+    this.tokens.pop();
+  }
   
   this.addToken(result[1], keyword);
   return result[0].length;

@@ -1,8 +1,12 @@
-foo = 1
-bar = 2.0
-baz = 3 + 3
-foo = 1
+someInt = 1
+someFloat = 1.0
+
 if foo
-  NSString foo = bar
-  baz = 3 + 3
-foo = foo
+  someOtherInt = 1 + 1
+  someOtherFloat = 1.0 + 1.0
+  someFloat = 2.0
+else
+  foo = bar
+  bar = baz
+
+foo = bar

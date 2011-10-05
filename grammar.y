@@ -6,13 +6,14 @@
   }
   
   var scope = [[]];
-  
+
   print = function (object) {
     console.log(code(object));
   }
   
   code = function (object) {
     if (object == undefined) return '';
+
     if (object.code)
       return (object.code);
     else
@@ -34,8 +35,9 @@ program
 
 body
   : line
+    {$$ = Array(scope.length).join('\t') + code($line)}
   | body terminator line
-    {$$ = code($body) + $terminator + code($line)}
+    {$$ = code($body) + $terminator + Array(scope.length).join('\t') + code($line)}
   | body terminator
     {$$ = code($body) + $terminator}
   ;
@@ -79,6 +81,8 @@ block
 if_block
   : 'if' expression block
     {$$ = 'if (' + code($expression) + ') {\n' + code($block) + '\n}'}
+  | if_block 'else' block
+    {$$ = code($if_block) + ' else {\n' + code($block) + '\n}'}
   ;
   
 If
