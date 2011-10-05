@@ -1,5 +1,6 @@
 foo = "Hi, I'm a string literal."
 bar = 'I\'m another string literal.'
+bar message: blah
 123 > 12
 baz = ("I'm an expression.")
 

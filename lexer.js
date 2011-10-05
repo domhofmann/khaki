@@ -12,7 +12,7 @@ Lexer.prototype.addToken = function (tag, value) {
 
 Lexer.prototype.tokenize = function (code) {
   // strip trailing spaces
-  code = code.replace(/\r/g, '').replace(/\s+$/g, '[STRIP]');
+  code = code.replace(/\r/g, '').replace(/\s+$/g, '');
   
   this.code = code;
   this.line = 1;
@@ -27,17 +27,39 @@ Lexer.prototype.tokenize = function (code) {
   while (this.chunk = code.slice(i)) {
     //i += identifierToken;
     i += 
+      this.keywordToken() ||
       this.wordToken() ||
       this.numberToken() ||
       this.stringLiteralToken() ||
+      this.assignmentToken() ||
       this.operatorToken() ||
+      this.selectorToken() ||
       this.newlineToken() ||
       this.whitespaceToken() ||
       this.literalToken();
   }
   
+  this.addToken('EOF', 'EOF');
+  
   // print tokenized code
   console.log("\n" + code + "\n\n=== tokens ===>\n\n" + sys.inspect(this.tokens) + "\n");
+  return this.tokens;
+};
+
+Lexer.prototype.keywordToken = function () {
+  var keywords = [
+    'if',
+    'else'
+  ];
+
+  var match = new RegExp('^\ *(' + keywords.join('|') + ')\ *');
+  var result = match.exec(this.chunk);
+  if (!result) return 0;
+  
+  var keyword = result[1].replace(/\ */g, '');
+  
+  this.addToken(result[1], keyword);
+  return result[0].length;
 };
 
 Lexer.prototype.wordToken = function () {
@@ -50,7 +72,7 @@ Lexer.prototype.wordToken = function () {
 }
 
 Lexer.prototype.numberToken = function () {
-  var result = /^[0-9]+("."[0-9]+)?\b/.exec(this.chunk);
+  var result = /^[0-9]+(\.[0-9]+)?\b/.exec(this.chunk);
   if (!result) return 0;
   
   this.addToken('NUMBER', result[0]);
@@ -72,10 +94,32 @@ Lexer.prototype.stringLiteralToken = function () {
   return result[0].length;
 };
 
+Lexer.prototype.assignmentToken = function () {
+  var operators = [
+    '=',
+    '+=',
+    '/=',
+    '*=',
+    '-='
+  ];
+  
+  operators = operators.map(function (operator) {
+    return '\\' + operator;
+  });
+  
+  var match = new RegExp('^\ *(' + operators.join('|') + ')\ *');
+  var result = match.exec(this.chunk);
+  if (!result) return 0;
+  
+  var operator = result[0].replace(/\ */g, '');
+  
+  this.addToken('ASSIGNMENT_OPERATOR', operator);
+  return result[0].length;
+};
+
 Lexer.prototype.operatorToken = function () {
   var operators = [
     '!',
-    '=',
     '+'
   ];
   
@@ -90,6 +134,15 @@ Lexer.prototype.operatorToken = function () {
   var operator = result[0].replace(/\ */g, '');
   
   this.addToken('OPERATOR', operator);
+  return result[0].length;
+};
+
+Lexer.prototype.selectorToken = function () {
+  var result = /^ +([a-zA-Z]+\:{1})/.exec(this.chunk);
+  if (!result) return 0;
+  
+  this.addToken('SELECTOR_ARG', result[0]);
+  
   return result[0].length;
 };
 
@@ -109,6 +162,8 @@ Lexer.prototype.newlineToken = function () {
       this.addToken('DEDENT', 'Dedent');
       this.indent = result[1].length;
       this.indents.pop();
+    } else {
+      this.addToken('NEWLINE', 'Newline');
     }
     
     return result[0].length;
@@ -126,6 +181,9 @@ Lexer.prototype.newlineToken = function () {
         this.addToken('DEDENT', 'Dedent');
         this.indents.pop();
       }
+      
+      // @TODO: Keep on eye on this.
+      this.addToken('NEWLINE', 'Newline');
     } else {
       this.addToken('NEWLINE', 'Newline');
     }
@@ -149,6 +207,8 @@ Lexer.prototype.literalToken = function () {
   return 1;
 };
 
+/*
 var source = require('fs').readFileSync(require('path').join(process.cwd(), 'test2.khaki'), "utf8");
 var lexer = new Lexer();
 lexer.tokenize(source)
+*/

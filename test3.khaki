@@ -1,0 +1,8 @@
+foo = 1
+bar = 2.0
+baz = 3 + 3
+foo = 1
+if foo
+  NSString foo = bar
+  baz = 3 + 3
+foo = foo
