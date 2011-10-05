@@ -1,16 +1,21 @@
-someInt = 1
+foo bar:baz
+someInt = 1 + 1
 someFloat = 1.0
+someString = "test"
 
 if foo
   someOtherInt = 1 + 1
   someOtherFloat = 1.0 + 1.0
   someFloat = 2.0
 else if bar
-  foo = bar
+  foo = 'hello'
   bar = baz
 else
+  bar = baz
   if nestedIf
     bar = baz
     foo = bar
+  bar = baz
 
-foo = bar
+someString = "blah!"
+someInt = foo

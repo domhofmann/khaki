@@ -19,9 +19,10 @@ parser.lexer = {
 };
 
 parser.yy = require('./types');
-// new Lexer().tokenize(source)
+console.log(source);
+//new Lexer().tokenize(source)
 var compiled = parser.parse(new Lexer().tokenize(source));
-console.log('=== compiled ===>\n\n' + compiled + '\n');
+console.log('\n\n=== compiled ===>\n\n' + compiled + '\n');
 
 //console.log(source);
 //var lexer = new Lexer();

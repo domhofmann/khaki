@@ -6,6 +6,10 @@ function code (object) {
     return (object);
 }
 
+exports._String = function (string) {
+  return {type: 'NSString', code: '@"' + string.slice(1, -1) + '"'};
+}
+
 exports._Number = function (number) {
   var type;
   if (/\.{1}/.exec(number.toString())) {
@@ -16,6 +20,19 @@ exports._Number = function (number) {
   
   return {type: type, scalar: true, code: number.toString()};
 };
+
+exports._Message = function (opts) {
+  
+  var target = opts.target;
+  var args = opts.args;
+  
+  var stubs = args.map(function (arg) {
+    return arg.arg + code(arg.value);
+  }).join('');
+  
+  return '[' + target + stubs + ']';
+  
+}
 
 exports._Operation = function (opts) {
   

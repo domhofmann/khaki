@@ -22,7 +22,8 @@
   
 %}
 
-%left OPERATOR
+%right '('
+%left ')'
 %start program
 %%
 
@@ -55,10 +56,13 @@ terminator
   ;
   
 expression
-  : assignment
+  : '(' expression ')'
+    { $$ = $expression }
+  | assignment
+  | message
   | operation
   | If
-  | simple_type
+  | value
   ;
   
 indent
@@ -80,7 +84,7 @@ block
   
 if_block
   : 'if' expression block
-    {$$ = 'if (' + code($expression) + ') {\n' + code($block) + '\n}'}
+    {$$ = 'if (' + code($expression) + ') {\n' + code($block) + '\n' + Array(scope.length).join('\t') + '}'}
   | if_block 'else' 'if' expression block
     {$$ = code($if_block) + ' else if (' + code($expression) + ') {\n' + code($block) + '\n}'}
   ;
@@ -92,9 +96,9 @@ If
   ;
   
 operation
-  : simple_type OPERATOR simple_type
-    { $$ = yy._Operation({left: $simple_type1, operator: $OPERATOR, right: $simple_type2}) }
-    //{$$ = $simple_type1 + ' ' + $OPERATOR + ' ' + $simple_type2}
+  : value OPERATOR value
+    { $$ = yy._Operation({left: $value1, operator: $OPERATOR, right: $value2}) }
+    //{$$ = $value1 + ' ' + $OPERATOR + ' ' + $value2}
   ;
   
 assignment
@@ -106,8 +110,30 @@ assignment
     { $$ = yy._Assignment({scope: scope, identifier: $WORD1, operator: $ASSIGNMENT_OPERATOR, expression: $expression}) }
   ;
   
-simple_type
+message
+  : value selector_args
+    { $$ = yy._Message({target: $value, args: $selector_args}) }
+  ;
+  
+selector_args
+  : selector_args selector_arg
+    { $selector_args.push($selector_arg[0]); $$ = $selector_args }
+  | selector_arg
+  ;
+  
+selector_arg
+  : SELECTOR_ARG value
+    { $$ = [{arg: $SELECTOR_ARG, value: $value}] }
+  ;
+  
+value
   : WORD
+  | literal
+  ;
+
+literal
+  : STRING_LITERAL
+    { $$ = yy._String($STRING_LITERAL) }
   | NUMBER
     { $$ = yy._Number($NUMBER) }
   ;

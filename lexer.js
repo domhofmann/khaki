@@ -19,7 +19,7 @@ Lexer.prototype.tokenize = function (code) {
   code = code.replace(/\r/g, '').replace(/\s+$/g, '');
   
   this.code = code;
-  this.line = 1;
+  this.line = 0;
   this.indent = 0;
   this.indebt = 0;
   this.outdebt = 0;
@@ -45,8 +45,6 @@ Lexer.prototype.tokenize = function (code) {
   
   this.addToken('EOF', 'EOF');
   
-  // print tokenized code
-  console.log("\n" + code + "\n\n=== tokens ===>\n\n" + sys.inspect(this.tokens) + "\n");
   return this.tokens;
 };
 
@@ -170,6 +168,9 @@ Lexer.prototype.newlineToken = function () {
       this.addToken('DEDENT', 'Dedent');
       this.indent = result[1].length;
       this.indents.pop();
+      
+      // @TODO: Is this a hack?
+      this.addToken('NEWLINE');
     } else {
       this.addToken('NEWLINE', 'Newline');
     }
@@ -190,7 +191,7 @@ Lexer.prototype.newlineToken = function () {
         this.indents.pop();
       }
       
-      // @TODO: Keep on eye on this.
+      // @TODO: Is this a hack?
       this.addToken('NEWLINE', 'Newline');
     } else {
       this.addToken('NEWLINE', 'Newline');
