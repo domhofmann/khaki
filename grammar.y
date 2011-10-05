@@ -81,12 +81,14 @@ block
 if_block
   : 'if' expression block
     {$$ = 'if (' + code($expression) + ') {\n' + code($block) + '\n}'}
-  | if_block 'else' block
-    {$$ = code($if_block) + ' else {\n' + code($block) + '\n}'}
+  | if_block 'else' 'if' expression block
+    {$$ = code($if_block) + ' else if (' + code($expression) + ') {\n' + code($block) + '\n}'}
   ;
   
 If
   : if_block
+  | if_block 'else' block
+    {$$ = code($if_block) + ' else {\n' + code($block) + '\n}'}
   ;
   
 operation

@@ -63,7 +63,6 @@ Lexer.prototype.keywordToken = function () {
   var keyword = result[1].replace(/\ */g, '');
   
   if (keyword == 'else' && this.lastToken() == 'NEWLINE') {
-    console.log('POP');
     this.tokens.pop();
   }
   

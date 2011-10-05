@@ -5,8 +5,12 @@ if foo
   someOtherInt = 1 + 1
   someOtherFloat = 1.0 + 1.0
   someFloat = 2.0
-else
+else if bar
   foo = bar
   bar = baz
+else
+  if nestedIf
+    bar = baz
+    foo = bar
 
 foo = bar
