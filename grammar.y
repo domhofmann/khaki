@@ -56,6 +56,7 @@ terminator
 expression
   : assignment
   | message
+  | construction
   | operation
   | If
   | value
@@ -104,6 +105,15 @@ assignment
     { $$ = yy._Assignment({scope: scope, type: $WORD1, identifier: $WORD2, operator: $ASSIGNMENT_OPERATOR, expression: $expression}) }
   | WORD ASSIGNMENT_OPERATOR expression
     { $$ = yy._Assignment({scope: scope, identifier: $WORD1, operator: $ASSIGNMENT_OPERATOR, expression: $expression}) }
+  ;
+  
+construction
+  : WORD '!'
+  { $$ = yy._Construction({type: $WORD}) }
+  | WORD '!' selector_args
+  { $$ = yy._Construction({type: $WORD, message: $selector_args}) }
+  | WORD '!' WORD
+  { $$ = yy._Construction({type: $WORD1, message: $WORD2}) }
   ;
   
 message

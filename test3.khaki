@@ -1,3 +1,7 @@
+UIView!
+a = UIView! withFoo:1 withBar:2
+UIView! foo
+req = NSURLRequest! withURL:(NSURL! withString:path)
 foo = "someString" lowercaseString
 bar = "someString" lowercaseString uppercaseString
 baz = foo stringByAppendingString:bar

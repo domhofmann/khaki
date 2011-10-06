@@ -125,7 +125,6 @@ Lexer.prototype.assignmentToken = function () {
 
 Lexer.prototype.operatorToken = function () {
   var operators = [
-    '!',
     '+'
   ];
   

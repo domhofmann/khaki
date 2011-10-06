@@ -21,6 +21,32 @@ exports._Number = function (number) {
   return {type: type, scalar: true, code: number.toString()};
 };
 
+exports._Construction = function (opts) {
+  
+  var type = opts.type;
+  var message = opts.message;
+
+  if (!message) {
+    return {
+      type: type,
+      code: '[[[' + type + ' alloc] init] autorelease]'
+    };
+  } else {
+    
+    if (message instanceof Array) {
+      message = message.map(function (arg) {
+        return arg.arg + code(arg.value);
+      }).join('');
+    } else message = ' ' + message;
+    
+    return {
+      type: type,
+      code: '[[[' + type + ' alloc] init' + code(message).substr(1).capitalize() + '] autorelease]'
+    }
+  }
+  
+}
+
 exports._Message = function (opts) {
   
   var target = opts.target;
