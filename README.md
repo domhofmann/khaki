@@ -24,8 +24,12 @@ uint ~somePrimitive = 100
 
 # fallback to inline Objective-C if needed
 foo = 'foo'
-`NSString *bar = @"bar";`
+`NSString *bar = @"bar"`
 baz = `[foo stringByAppendingString:bar]`
+
+# import wherever you need
+import AVFoundation
+recorder = AVAudioRecorder!
 
 # current status
 NSLog('Khaki is pre-pre-pre-alpha')
@@ -34,8 +38,11 @@ NSLog('Khaki is pre-pre-pre-alpha')
 compiles to this:
 
 ```objective-c
+#import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
+
 UIView *someView = [[[UIView alloc] init] autorelease];
-[someView setFrame:CGRectMake(0, 0, 200, 200)]
+[someView setFrame:CGRectMake(0, 0, 200, 200)];
 if (someCondition) {
 	NSString *path = @"http://google.com";
 	NSURLRequest *req = [[[NSURLRequest alloc] initWithURL:[[[NSURL alloc] initWithString:path] autorelease]] autorelease];
@@ -49,5 +56,6 @@ uint somePrimitive = 100;
 NSString *foo = @"foo";
 NSString *bar = @"bar";
 id baz = [foo stringByAppendingString:bar];
-NSLog(@"Khaki is pre-pre-pre-alpha")
+AVAudioRecorder *recorder = [[[AVAudioRecorder alloc] init] autorelease];
+NSLog(@"Khaki is pre-pre-pre-alpha");
 ```
