@@ -11,13 +11,12 @@ someView setFrame:@(0, 0, 200, 200)
 
 # conditionals, string literals, and nested selectors
 if someCondition
-	path = 'http://google.com'
-	req = NSURLRequest! withURL:(NSURL! withString:path)
+  path = 'http://google.com'
+  req = NSURLRequest! withURL:(NSURL! withString:path)
 else
- 	uppercase = 'THIS TEXT IS CAPITALIZED'
-	lowercase = capitalizedText lowercaseString
-	hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
-end
+  uppercase = 'THIS TEXT IS CAPITALIZED'
+  lowercase = capitalizedText lowercaseString
+  hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
 
 # strict typing
 SomeType somePointer = SomeClass giveMeSomeType
@@ -36,19 +35,19 @@ compiles to this:
 
 ```objective-c
 UIView *someView = [[[UIView alloc] init] autorelease];
-[someView setFrame:CGRectMake(0, 0, 200, 200)];
+[someView setFrame:CGRectMake(0, 0, 200, 200)]
 if (someCondition) {
-NSString *path = @"http://google.com";
-NSURLRequest *req = [[[NSURLRequest alloc] initWithURL:[[[NSURL alloc] initWithString:path] autorelease]] autorelease];
+	NSString *path = @"http://google.com";
+	NSURLRequest *req = [[[NSURLRequest alloc] initWithURL:[[[NSURL alloc] initWithString:path] autorelease]] autorelease];
 } else {
-NSString *uppercase = @"THIS TEXT IS CAPITALIZED";
-id lowercase = [capitalizedText lowercaseString];
-id hello = [[@"hello/world" componentsSeparatedByString:@"/"] objectAtIndex:2];
+	NSString *uppercase = @"THIS TEXT IS CAPITALIZED";
+	id lowercase = [capitalizedText lowercaseString];
+	id hello = [[@"hello/world" componentsSeparatedByString:@"/"] objectAtIndex:2];
 }
 SomeType *somePointer = [SomeClass giveMeSomeType];
 uint somePrimitive = 100;
 NSString *foo = @"foo";
 NSString *bar = @"bar";
 id baz = [foo stringByAppendingString:bar];
-NSLog(@"Khaki is pre-pre-pre-alpha");
+NSLog(@"Khaki is pre-pre-pre-alpha")
 ```
