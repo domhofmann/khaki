@@ -17,14 +17,14 @@ else
 SomeType somePointer = SomeClass giveMeSomeType
 uint ~somePrimitive = 100
 
-# fallback to inline Objective-C if needed
+# import whenever you feel like it
+import AVFoundation
+recorder = AVAudioRecorder!
+
+# fallback to inline Objective-C if necessary
 foo = 'foo'
 `NSString *bar = @"bar"`
 baz = `[foo stringByAppendingString:bar]`
-
-# import wherever you need
-import AVFoundation
-recorder = AVAudioRecorder!
 
 # current status
 NSLog('Khaki is pre-pre-pre-alpha')
