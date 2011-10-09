@@ -1,33 +1,26 @@
-UIView!
-a = UIView! withFoo:1 withBar:2
-UIView! foo
-req = NSURLRequest! withURL:(NSURL! withString:path)
-foo = "someString" lowercaseString
-bar = "someString" lowercaseString uppercaseString
-baz = foo stringByAppendingString:bar
+# variable assignment and autoreleased constructor
+someView = UIView!
 
-# this is a comment
+# selector invocation and CGRect shortcut
+someView setFrame:@(0, 0, 200, 200)
 
-NSLog('hi')
-someRect = @(20, 20, 20, 20)
-
-someInt = 1 + 1
-someFloat = 1.0
-someString = "test"
-
-if foo
-  someOtherInt = 1 + 1
-  someOtherFloat = 1.0 + 1.0
-  someFloat = 2.0
-else if bar
-  hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
-  foo = (foo bar) baz
+# conditionals, string literals, and nested selectors
+if someCondition
+  path = 'http://google.com'
+  req = NSURLRequest! withURL:(NSURL! withString:path)
 else
-  bar = baz
-  if nestedIf
-    bar = baz
-    foo = bar
-  bar = baz
+  uppercase = 'THIS TEXT IS CAPITALIZED'
+  lowercase = capitalizedText lowercaseString
+  hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
 
-someString = "blah!"
-someInt = foo
+# strict typing
+SomeType somePointer = SomeClass giveMeSomeType
+uint ~somePrimitive = 100
+
+# fallback to inline Objective-C if needed
+foo = 'foo'
+`NSString *bar = @"bar";`
+baz = `[foo stringByAppendingString:bar]`
+
+# current status
+NSLog('Khaki is pre-pre-pre-alpha')

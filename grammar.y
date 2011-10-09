@@ -55,7 +55,6 @@ terminator
   
 expression
   : assignment
-  | cg_shortcut
   | invocation
   | message
   | construction
@@ -168,6 +167,7 @@ value
   : WORD
   | literal
   | parenthetical
+  | cg_shortcut
   ;
   
 fallback
