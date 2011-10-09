@@ -157,19 +157,52 @@ list
   ;
 
 method_def
-  : method_arg METHOD_START block
-  { $$ = yy._Method({operator: $METHOD_START.charAt(0), signature: $method_arg, block: $block}) }
+  : return_type method_arg METHOD_START block
+  | method_arg METHOD_START block
+    { $$ = yy._Method({operator: $METHOD_START.charAt(0), signature: $method_arg, block: $block}) }
+  ;
+
+return_type
+  : casts
   ;
 
 method_arg
+  /*
   : method_arg SELECTOR_ARG value '~'
   { $method_arg.args.push([yy._MethodArg({arg: $SELECTOR_ARG, type: $value, scalar: true})]); $$ = $method_arg }
   | method_arg SELECTOR_ARG value
   { $method_arg.args.push([yy._MethodArg({arg: $SELECTOR_ARG, type: $value})]); $$ = $method_arg }
   | SELECTOR_ARG value '~'
   { $$ = {args: [yy._MethodArg({arg: $SELECTOR_ARG, type: $value, scalar: true})]} }
-  | SELECTOR_ARG value
-  { $$ = {args: [yy._MethodArg({arg: $SELECTOR_ARG, type: $value})]} }
+  */
+  : method_arg SELECTOR_ARG casts
+    { $method_arg.args.push([yy._MethodArg({arg: $SELECTOR_ARG, cast: $casts})]); $$ = $method_arg }
+  | SELECTOR_ARG casts
+    { $$ = {args: [yy._MethodArg({arg: $SELECTOR_ARG, cast: $casts})]} }
+  ;
+
+casts
+  : '(' cast ')'
+    { $$ = $cast }
+  | simple_cast
+  ;
+
+simple_cast
+  : WORD '~'
+  { $$ = yy._Cast({type: $WORD, scalar: true}) }
+  | WORD
+  { $$ = yy._Cast({type: $WORD}) }
+  ;
+
+cast
+  : cast '~'
+  { $cast.scalar = true; $$ = $cast}
+  | cast WORD
+  { $$ = yy._Cast({type: $cast.type + ' ' + $WORD}) }
+  /*
+  | WORD
+  { $$ = yy._Cast({type: $WORD}) }
+  */
   ;
     
 message

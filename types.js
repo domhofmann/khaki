@@ -107,11 +107,23 @@ exports._Method = function (opts) {
 exports._MethodArg = function (opts) {
   
   var arg = opts.arg;
-  var type = (!opts.scalar) ? code(opts.type) + ' *' : code(opts.type);
+  var type = (!opts.cast.scalar) ? code(opts.cast.type) + ' *' : code(opts.cast.type);
   
   return code(arg) + '(' + type + ')' + code(arg).slice(0, -1);
   
 };
+
+exports._Cast = function (opts) {
+  
+  var type = opts.type;
+  var scalar = opts.scalar;
+  
+  return {
+    type: type,
+    scalar: scalar
+  };
+  
+}
 
 exports._Message = function (opts) {
   

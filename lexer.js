@@ -120,7 +120,7 @@ Lexer.prototype.stringLiteralToken = function () {
 };
 
 Lexer.prototype.methodStartToken = function () {
-  var result = /^\n+(\-\-\-|\+\+\+){1}/.exec(this.chunk);
+  var result = /^\n+\ *(\-\-\-|\+\+\+){1}/.exec(this.chunk);
   if (!result) return 0;
   
   this.addToken('METHOD_START', result[1]);

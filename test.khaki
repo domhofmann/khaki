@@ -1,7 +1,7 @@
-foo:NSString bar:NSInteger~
+- printString:NSString stripWhitespace:BOOL~
 ---
-  foo
-  bar
+  NSLog(printString)
+  return yes
 
 # variable assignment and autoreleased constructor
 someView = UIView!
