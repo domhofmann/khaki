@@ -1,9 +1,9 @@
 function code (object) {
   if (object == undefined) return '';
   if (object.code)
-    return (object.code);
+    return object.code;
   else
-    return (object);
+    return object;
 }
 
 exports._String = function (string) {
@@ -116,8 +116,25 @@ exports._Operation = function (opts) {
   if (left.type == right.type) type = left.type;
   if (left.scalar == right.scalar) scalar = left.scalar;
   
-  return {type: type, scalar: scalar, code: left.code + ' ' + operator + ' ' + right.code};
+  if (left.parenthetical) {
+    left = '(' + code(left) + ')';
+  } else {
+    left = code(left);
+  }
   
+  if (right.parenthetical) {
+    right = '(' + code(right) + ')';
+  } else {
+    right = code(right);
+  }
+    
+  
+  return {type: type, scalar: scalar, code: left + ' ' + operator + ' ' + right};
+  
+};
+
+exports._Parenthetical = function (body) {
+  return {parenthetical: true, code: code(body).replace(/\t/g, '') };
 };
 
 exports._Assignment = function (opts) {

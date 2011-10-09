@@ -99,7 +99,9 @@ If
   ;
   
 operation
-  : value OPERATOR value
+  : operation OPERATOR value
+    { $$ = yy._Operation({left: $operation, operator: $OPERATOR, right: $value}) }
+  | value OPERATOR value
     { $$ = yy._Operation({left: $value1, operator: $OPERATOR, right: $value2}) }
     //{$$ = $value1 + ' ' + $OPERATOR + ' ' + $value2}
   ;
@@ -181,7 +183,7 @@ fallback
   
 parenthetical
   : '(' body ')'
-  { $$ = $body.replace(/\t/g, '') }
+  { $$ = yy._Parenthetical($body) }
   ;
 
 literal
