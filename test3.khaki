@@ -1,3 +1,5 @@
+import UIKit
+
 # variable assignment and autoreleased constructor
 someView = UIView!
 

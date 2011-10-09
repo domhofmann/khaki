@@ -67,6 +67,7 @@ Lexer.prototype.fallbackToken = function () {
 
 Lexer.prototype.keywordToken = function () {
   var keywords = [
+    'import',
     'if',
     'else'
   ];
@@ -203,7 +204,7 @@ Lexer.prototype.newlineToken = function () {
     if (this.indent > 0) {
       this.indent = 0;
       while (this.indents.length > 0) {
-        if (this.tokens[this.tokens.length - 1][0] == 'NEWLINE') this.tokens.pop();
+          if (this.tokens[this.tokens.length - 1][0] == 'NEWLINE') this.tokens.pop();
         this.addToken('DEDENT', 'Dedent');
         this.indents.pop();
       }

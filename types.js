@@ -6,9 +6,16 @@ function code (object) {
     return object;
 }
 
+exports._Importation = function (opts) {
+  var framework = opts.framework;
+  if (framework) {
+    return {code: '#import <' + framework + '/' + framework + '.h>'};
+  }
+};
+
 exports._String = function (string) {
   return {type: 'NSString', code: '@"' + string.slice(1, -1) + '"'};
-}
+};
 
 exports._Number = function (number) {
   var type;

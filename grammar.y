@@ -57,6 +57,15 @@ terminator
     {$$ = ''}
   ;
   
+statement
+  : importation
+  ;
+
+importation
+  : 'import' WORD
+    { $$ = yy._Importation({framework: $WORD}) }
+  ;
+  
 expression
   : assignment
   | invocation
