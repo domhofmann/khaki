@@ -55,6 +55,7 @@ terminator
   
 expression
   : assignment
+  | invocation
   | message
   | construction
   | operation
@@ -109,13 +110,25 @@ assignment
   
 construction
   : WORD '!'
-  { $$ = yy._Construction({type: $WORD}) }
+    { $$ = yy._Construction({type: $WORD}) }
   | WORD '!' selector_args
-  { $$ = yy._Construction({type: $WORD, message: $selector_args}) }
+    { $$ = yy._Construction({type: $WORD, message: $selector_args}) }
   | WORD '!' WORD
-  { $$ = yy._Construction({type: $WORD1, message: $WORD2}) }
+    { $$ = yy._Construction({type: $WORD1, message: $WORD2}) }
   ;
   
+invocation
+  : WORD '(' list ')'
+    { $$ = yy._Invocation({func: $WORD, args: $list}) }
+  ;
+  
+list
+  : list ',' expression
+    { $list.push($expression); $$ = $list }
+  | expression
+    { $$ = [$expression] }
+  ;
+    
 message
   : value selector_args
     { $$ = yy._Message({target: $value, args: $selector_args}) }

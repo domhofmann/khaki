@@ -45,6 +45,21 @@ exports._Construction = function (opts) {
     }
   }
   
+};
+
+exports._Invocation = function (opts) {
+  
+  var func = opts.func;
+  var args = opts.args || [];
+  
+  args = args.map(function (arg) {
+    return code(arg);
+  });
+  
+  return {
+    code: opts.func + '(' + args.join(', ') + ')'
+  };
+  
 }
 
 exports._Message = function (opts) {
@@ -82,7 +97,7 @@ exports._Operation = function (opts) {
   
   return {type: type, scalar: scalar, code: left.code + ' ' + operator + ' ' + right.code};
   
-}
+};
 
 exports._Assignment = function (opts) {
 
