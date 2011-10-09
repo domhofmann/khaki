@@ -188,7 +188,7 @@ Lexer.prototype.newlineToken = function () {
       // @TODO: Is this a hack?
       this.addToken('NEWLINE', 'Newline');
     } else { 
-      this.addToken('NEWLINE', 'Newline');
+      if (this.tokens[this.tokens.length - 1][0] != 'NEWLINE') this.addToken('NEWLINE', 'Newline');
     }
     
     return result[0].length;
@@ -203,6 +203,7 @@ Lexer.prototype.newlineToken = function () {
     if (this.indent > 0) {
       this.indent = 0;
       while (this.indents.length > 0) {
+        if (this.tokens[this.tokens.length - 1][0] == 'NEWLINE') this.tokens.pop();
         this.addToken('DEDENT', 'Dedent');
         this.indents.pop();
       }

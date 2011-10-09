@@ -11,7 +11,11 @@ if someCondition
 else
   uppercase = 'THIS TEXT IS CAPITALIZED'
   lowercase = capitalizedText lowercaseString
+  
+  
   hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
+  
+  
 
 # strict typing
 SomeType somePointer = SomeClass giveMeSomeType
