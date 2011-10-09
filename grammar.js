@@ -21,6 +21,10 @@ var grammar = (function(){
       return (object);
   }
   
+  needsSemicolon = function (string) {
+    return string.charAt(string.length - 1) != "}";
+  }
+  
 
 var parser = {trace: function trace() { },
 yy: {},
@@ -37,9 +41,9 @@ case 1:
 break;
 case 2:this.$ = Array(scope.length).join('\t') + code($$[$0])
 break;
-case 3:this.$ = code($$[$0-2]) + $$[$0-1] + Array(scope.length).join('\t') + code($$[$0])
+case 3:var c = code($$[$0-2]); this.$ = code($$[$0-2]) + (needsSemicolon(c) ? ';' : '') + $$[$0-1] + Array(scope.length).join('\t') + code($$[$0])
 break;
-case 4:this.$ = code($$[$0-1]) + $$[$0]
+case 4:var c = code($$[$0-1]); this.$ = code($$[$0-1]) + (needsSemicolon(c) ? ';' : '') + $$[$0]
 break;
 case 7:this.$ = '\n'
 break;
@@ -51,13 +55,13 @@ case 18: scope.pop()
 break;
 case 19:this.$ = ''
 break;
-case 20:this.$ = code($$[$0-1])
+case 20:var c = code($$[$0-1]); this.$ = code($$[$0-1]) + (needsSemicolon(c) ? ';' : '')
 break;
 case 21:this.$ = 'if (' + code($$[$0-1]) + ') {\n' + code($$[$0]) + '\n' + Array(scope.length).join('\t') + '}'
 break;
-case 22:this.$ = code($$[$0-4]) + ' else if (' + code($$[$0-1]) + ') {\n' + code($$[$0]) + '\n}'
+case 22:this.$ = code($$[$0-4]) + ' else if (' + code($$[$0-1]) + ') {\n' + code($$[$0]) + '\n' + Array(scope.length).join('\t') + '}'
 break;
-case 24:this.$ = code($$[$0-2]) + ' else {\n' + code($$[$0]) + '\n}'
+case 24:this.$ = code($$[$0-2]) + ' else {\n' + code($$[$0]) + '\n' + Array(scope.length).join('\t') + '}'
 break;
 case 25: this.$ = yy._Operation({left: $$[$0-2], operator: $$[$0-1], right: $$[$0]}) 
 break;

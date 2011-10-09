@@ -186,8 +186,8 @@ Lexer.prototype.newlineToken = function () {
       this.indents.pop();
       
       // @TODO: Is this a hack?
-      this.addToken('NEWLINE');
-    } else {
+      this.addToken('NEWLINE', 'Newline');
+    } else { 
       this.addToken('NEWLINE', 'Newline');
     }
     

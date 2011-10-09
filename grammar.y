@@ -20,6 +20,10 @@
       return (object);
   }
   
+  needsSemicolon = function (string) {
+    return string.charAt(string.length - 1) != "}";
+  }
+  
 %}
 
 %start program
@@ -36,9 +40,9 @@ body
   : line
     {$$ = Array(scope.length).join('\t') + code($line)}
   | body terminator line
-    {$$ = code($body) + $terminator + Array(scope.length).join('\t') + code($line)}
+    {var c = code($body); $$ = code($body) + (needsSemicolon(c) ? ';' : '') + $terminator + Array(scope.length).join('\t') + code($line)}
   | body terminator
-    {$$ = code($body) + $terminator}
+    {var c = code($body); $$ = code($body) + (needsSemicolon(c) ? ';' : '') + $terminator}
   ;
   
 line
@@ -78,20 +82,20 @@ block
   : indent dedent
     {$$ = ''}
   | indent body dedent
-    {$$ = code($body)}
+    {var c = code($body); $$ = code($body) + (needsSemicolon(c) ? ';' : '')}
   ;
   
 if_block
   : 'if' expression block
     {$$ = 'if (' + code($expression) + ') {\n' + code($block) + '\n' + Array(scope.length).join('\t') + '}'}
   | if_block 'else' 'if' expression block
-    {$$ = code($if_block) + ' else if (' + code($expression) + ') {\n' + code($block) + '\n}'}
+    {$$ = code($if_block) + ' else if (' + code($expression) + ') {\n' + code($block) + '\n' + Array(scope.length).join('\t') + '}'}
   ;
   
 If
   : if_block
   | if_block 'else' block
-    {$$ = code($if_block) + ' else {\n' + code($block) + '\n}'}
+    {$$ = code($if_block) + ' else {\n' + code($block) + '\n' + Array(scope.length).join('\t') + '}'}
   ;
   
 operation
