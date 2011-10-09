@@ -5,6 +5,7 @@
       return this.charAt(0).toUpperCase() + this.slice(1);
   }
   
+  var imports = [];
   var scope = [[]];
 
   print = function (object) {
@@ -21,6 +22,7 @@
   }
   
   needsSemicolon = function (string) {
+    if (!string) return null;
     return string.charAt(string.length - 1) != "}";
   }
   
@@ -63,7 +65,7 @@ statement
 
 importation
   : 'import' WORD
-    { $$ = yy._Importation({framework: $WORD}) }
+    { imports.push(yy._Importation({framework: $WORD})); console.log($$) }
   ;
   
 expression

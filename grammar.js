@@ -6,6 +6,7 @@ var grammar = (function(){
       return this.charAt(0).toUpperCase() + this.slice(1);
   }
   
+  var imports = [];
   var scope = [[]];
 
   print = function (object) {
@@ -22,6 +23,7 @@ var grammar = (function(){
   }
   
   needsSemicolon = function (string) {
+    if (!string) return null;
     return string.charAt(string.length - 1) != "}";
   }
   
@@ -49,7 +51,7 @@ case 7:this.$ = '\n'
 break;
 case 8:this.$ = ''
 break;
-case 10: this.$ = yy._Importation({framework: $$[$0]}) 
+case 10: imports.push(yy._Importation({framework: $$[$0]})); console.log(this.$) 
 break;
 case 19: scope.push([]) 
 break;
