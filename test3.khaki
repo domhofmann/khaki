@@ -19,7 +19,7 @@ uint ~somePrimitive = 100
 
 # fallback to inline Objective-C if needed
 foo = 'foo'
-`NSString *bar = @"bar";`
+`NSString *bar = @"bar"`
 baz = `[foo stringByAppendingString:bar]`
 
 # current status

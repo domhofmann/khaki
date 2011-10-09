@@ -137,15 +137,15 @@ exports._Assignment = function (opts) {
   });
   
   if (reassign) {
-    return {code: identifier + ' ' + operator + ' ' + code(expression) + ';'}
+    return {code: identifier + ' ' + operator + ' ' + code(expression)}
   } else {
     scope[scope.length - 1].push({identifier: identifier, type: type});
   
     if (type) {
-      if (!scalar) return {code: type + ' *' + identifier + ' ' + operator + ' ' + code(expression) + ';'};
-      else return {code: type + ' ' + identifier + ' ' + operator + ' ' + code(expression) + ';'}
+      if (!scalar) return {code: type + ' *' + identifier + ' ' + operator + ' ' + code(expression)};
+      else return {code: type + ' ' + identifier + ' ' + operator + ' ' + code(expression)}
     } else {
-        return {code: 'id ' + identifier + ' ' + operator + ' ' + code(expression) + ';'};
+        return {code: 'id ' + identifier + ' ' + operator + ' ' + code(expression)};
     }
   }
 
