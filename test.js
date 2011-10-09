@@ -22,7 +22,7 @@ parser.lexer = {
 
 parser.yy = require('./types');
 console.log(source);
-// console.log('\n\n=== tokenize ===>\n\n' + sys.inspect(new Lexer().tokenize(source)) + '\n\n');
+console.log('\n\n=== tokenize ===>\n\n' + sys.inspect(new Lexer().tokenize(source)) + '\n\n');
 var compiled = parser.parse(new Lexer().tokenize(source));
 console.log('\n\n=== compiled ===>\n\n' + compiled + '\n');
 

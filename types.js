@@ -64,12 +64,12 @@ exports._Construction = function (opts) {
     if (message instanceof Array) {
       message = message.map(function (arg) {
         return arg.arg + code(arg.value);
-      }).join('');
-    } else message = ' ' + message;
+      }).join(' ');
+    } else message = message;
     
     return {
       type: type,
-      code: '[[[' + type + ' alloc] init' + code(message).substr(1).capitalize() + '] autorelease]'
+      code: '[[[' + type + ' alloc] init' + code(message).capitalize() + '] autorelease]'
     }
   }
   
@@ -90,6 +90,29 @@ exports._Invocation = function (opts) {
   
 }
 
+exports._Method = function (opts) {
+
+  var operator = opts.operator;
+  var signature = opts.signature;
+  var block = opts.block;
+  var type = opts.type || 'void';
+  
+  return {
+    type: type,
+    code: operator + ' ' + '(' + type + ')' + signature.args.join(' ') + ' {\n' + code(block) + '\n}'
+  };
+  
+};
+
+exports._MethodArg = function (opts) {
+  
+  var arg = opts.arg;
+  var type = (!opts.scalar) ? code(opts.type) + ' *' : code(opts.type);
+  
+  return code(arg) + '(' + type + ')' + code(arg).slice(0, -1);
+  
+};
+
 exports._Message = function (opts) {
   
   var target = opts.target;
@@ -101,13 +124,13 @@ exports._Message = function (opts) {
   if (args) {
     stubs = args.map(function (arg) {
       return arg.arg + code(arg.value);
-    }).join('');
+    }).join(' ');
   } else {
-    stubs = ' ' + code(message);
+    stubs = code(message);
   }
   
   return {
-    code: '[' + code(target) + stubs + ']'
+    code: '[' + code(target) + ' ' + stubs + ']'
   };
   
 }

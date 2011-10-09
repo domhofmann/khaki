@@ -78,6 +78,7 @@ expression
   | construction
   | operation
   | If
+  | method_def
   | value
   | fallback
   ;
@@ -153,6 +154,22 @@ list
     { $list.push($expression); $$ = $list }
   | expression
     { $$ = [$expression] }
+  ;
+
+method_def
+  : method_arg METHOD_START block
+  { $$ = yy._Method({operator: $METHOD_START.charAt(0), signature: $method_arg, block: $block}) }
+  ;
+
+method_arg
+  : method_arg SELECTOR_ARG value '~'
+  { $method_arg.args.push([yy._MethodArg({arg: $SELECTOR_ARG, type: $value, scalar: true})]); $$ = $method_arg }
+  | method_arg SELECTOR_ARG value
+  { $method_arg.args.push([yy._MethodArg({arg: $SELECTOR_ARG, type: $value})]); $$ = $method_arg }
+  | SELECTOR_ARG value '~'
+  { $$ = {args: [yy._MethodArg({arg: $SELECTOR_ARG, type: $value, scalar: true})]} }
+  | SELECTOR_ARG value
+  { $$ = {args: [yy._MethodArg({arg: $SELECTOR_ARG, type: $value})]} }
   ;
     
 message

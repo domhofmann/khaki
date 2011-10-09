@@ -34,12 +34,13 @@ Lexer.prototype.tokenize = function (code) {
       this.commentToken() ||
       this.fallbackToken() ||
       this.keywordToken() ||
+      this.selectorToken() ||
       this.wordToken() ||
       this.numberToken() ||
       this.stringLiteralToken() ||
+      this.methodStartToken() ||
       this.assignmentToken() ||
       this.operatorToken() ||
-      this.selectorToken() ||
       this.newlineToken() ||
       this.whitespaceToken() ||
       this.literalToken();
@@ -118,6 +119,14 @@ Lexer.prototype.stringLiteralToken = function () {
   return result[0].length;
 };
 
+Lexer.prototype.methodStartToken = function () {
+  var result = /^\n+(\-\-\-|\+\+\+){1}/.exec(this.chunk);
+  if (!result) return 0;
+  
+  this.addToken('METHOD_START', result[1]);
+  return result[0].length;
+};
+
 Lexer.prototype.assignmentToken = function () {
   var operators = [
     '=',
@@ -161,7 +170,8 @@ Lexer.prototype.operatorToken = function () {
 };
 
 Lexer.prototype.selectorToken = function () {
-  var result = /^ +([a-zA-Z]+\:{1})/.exec(this.chunk);
+  //var result = /^ +([a-zA-Z]+\:{1})/.exec(this.chunk);
+  var result = /^([a-zA-Z]+\:{1})/.exec(this.chunk);
   if (!result) return 0;
   
   this.addToken('SELECTOR_ARG', result[0]);
