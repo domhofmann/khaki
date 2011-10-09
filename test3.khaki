@@ -6,6 +6,11 @@ foo = "someString" lowercaseString
 bar = "someString" lowercaseString uppercaseString
 baz = foo stringByAppendingString:bar
 
+# this is a comment
+
+NSLog('hi')
+someRect = @(20, 20, 20, 20)
+
 someInt = 1 + 1
 someFloat = 1.0
 someString = "test"

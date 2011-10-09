@@ -21,6 +21,27 @@ exports._Number = function (number) {
   return {type: type, scalar: true, code: number.toString()};
 };
 
+exports._CGShortcut = function (args) {
+  
+  args = args.map(function (arg) {
+    return code(arg);
+  });
+  
+  if (args.length == 4) {
+    return {
+      type: 'CGRect',
+      scalar: true,
+      code: 'CGRectMake(' + args.join(', ') + ')'
+    };
+  } else if (args.length == 2) {
+    return {
+      type: 'CGPoint',
+      scalar: true,
+      code: 'CGPointMake(' + args.join(', ') + ')'
+    };
+  }
+}
+
 exports._Construction = function (opts) {
   
   var type = opts.type;

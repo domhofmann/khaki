@@ -55,12 +55,14 @@ terminator
   
 expression
   : assignment
+  | cg_shortcut
   | invocation
   | message
   | construction
   | operation
   | If
   | value
+  | fallback
   ;
   
 indent
@@ -106,6 +108,11 @@ assignment
     { $$ = yy._Assignment({scope: scope, type: $WORD1, identifier: $WORD2, operator: $ASSIGNMENT_OPERATOR, expression: $expression}) }
   | WORD ASSIGNMENT_OPERATOR expression
     { $$ = yy._Assignment({scope: scope, identifier: $WORD1, operator: $ASSIGNMENT_OPERATOR, expression: $expression}) }
+  ;
+  
+cg_shortcut
+  : '@' '(' list ')'
+    { $$ = yy._CGShortcut($list) }
   ;
   
 construction
@@ -161,6 +168,11 @@ value
   : WORD
   | literal
   | parenthetical
+  ;
+  
+fallback
+  : FALLBACK
+    { $$ = $FALLBACK }
   ;
   
 parenthetical

@@ -31,6 +31,8 @@ Lexer.prototype.tokenize = function (code) {
   while (this.chunk = code.slice(i)) {
     //i += identifierToken;
     i += 
+      this.commentToken() ||
+      this.fallbackToken() ||
       this.keywordToken() ||
       this.wordToken() ||
       this.numberToken() ||
@@ -47,6 +49,21 @@ Lexer.prototype.tokenize = function (code) {
   
   return this.tokens;
 };
+
+Lexer.prototype.commentToken = function () {
+  var result = /^#.*\n*/.exec(this.chunk);
+  if (!result) return 0;
+  
+  return result[0].length;
+}
+
+Lexer.prototype.fallbackToken = function () {
+  var result = /^`.*`/.exec(this.chunk);
+  if (!result) return 0;
+  
+  this.addToken('FALLBACK', result[0].slice(1, -1));
+  return result[0].length;
+}
 
 Lexer.prototype.keywordToken = function () {
   var keywords = [
