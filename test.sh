@@ -1,2 +1,3 @@
-jison khaki.c
-node khaki.js test.khaki
+clear
+jison grammar.y -o parser.js
+node test.js

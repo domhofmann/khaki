@@ -1,9 +1,9 @@
 var sys = require('sys');
 
-var parser = require('./grammar').parser;
+var parser = require('./parser').parser;
 var Lexer = require('./lexer').Lexer;
 
-var source = require('fs').readFileSync(require('path').join(process.cwd(), 'test3.khaki'), "utf8");
+var source = require('fs').readFileSync(require('path').join(process.cwd(), 'test.khaki'), "utf8");
 
 parser.lexer = {
   lex: function() {

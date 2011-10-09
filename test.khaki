@@ -6,13 +6,12 @@ someView setFrame:@(0, 0, 200, 200)
 
 # conditionals, string literals, and nested selectors
 if someCondition
-	path = 'http://google.com'
-	req = NSURLRequest! withURL:(NSURL! withString:path)
+  path = 'http://google.com'
+  req = NSURLRequest! withURL:(NSURL! withString:path)
 else
- 	uppercase = 'THIS TEXT IS CAPITALIZED'
-	lowercase = capitalizedText lowercaseString
-	hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
-end
+  uppercase = 'THIS TEXT IS CAPITALIZED'
+  lowercase = capitalizedText lowercaseString
+  hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
 
 # strict typing
 SomeType somePointer = SomeClass giveMeSomeType
@@ -20,8 +19,12 @@ uint ~somePrimitive = 100
 
 # fallback to inline Objective-C if needed
 foo = 'foo'
-`NSString *bar = @"bar";`
+`NSString *bar = @"bar"`
 baz = `[foo stringByAppendingString:bar]`
+
+# import wherever you need
+import AVFoundation
+recorder = AVAudioRecorder!
 
 # current status
 NSLog('Khaki is pre-pre-pre-alpha')

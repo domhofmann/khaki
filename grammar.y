@@ -5,7 +5,7 @@
       return this.charAt(0).toUpperCase() + this.slice(1);
   }
   
-  var imports = [];
+  var imports = ['#import <UIKit/UIKit.h>'];
   var scope = [[]];
 
   print = function (object) {
@@ -26,6 +26,8 @@
     return string.charAt(string.length - 1) != "}";
   }
   
+  var DELETE = '%%%DELETE%%%';
+  
 %}
 
 %start program
@@ -34,7 +36,9 @@
 program
   : body
   {{
-    return code($body);
+    var deleteToken = new RegExp(DELETE + '.*\n', 'g');
+    imports = imports.map(function (import) { return code(import) }).join('\n');
+    return imports + '\n\n' + code($body).replace(deleteToken, '');
   }}
   ;
 
@@ -47,25 +51,24 @@ body
     {var c = code($body); $$ = code($body) + (needsSemicolon(c) ? ';' : '') + $terminator}
   ;
   
+importation
+  : 'import' WORD
+  { imports.push(yy._Importation({framework: $WORD})); $$ = DELETE }
+  ;
+  
 line
   : expression
   | statement
+  | importation
   ;
 
 terminator
   : NEWLINE
     {$$ = '\n'}
+  | ';'
+    {$$ = '\n'}
   | EOF
     {$$ = ''}
-  ;
-  
-statement
-  : importation
-  ;
-
-importation
-  : 'import' WORD
-    { imports.push(yy._Importation({framework: $WORD})); console.log($$) }
   ;
   
 expression
