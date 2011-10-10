@@ -21,6 +21,13 @@
       return (object);
   }
   
+  merge = function (obj1, obj2) {
+      var obj3 = {};
+      for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+      for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+      return obj3;
+  }
+  
   needsSemicolon = function (string) {
     if (!string) return null;
     return string.charAt(string.length - 1) != "}";
@@ -157,13 +164,14 @@ list
   ;
 
 method_def
-  : return_type method_arg METHOD_START block
-  | method_arg METHOD_START block
-    { $$ = yy._Method({operator: $METHOD_START.charAt(0), signature: $method_arg, block: $block}) }
-  ;
-
-return_type
-  : casts
+  : 'def' casts method_arg block
+    { $$ = yy._Method(merge({operator: '-', signature: $method_arg, block: $block}, $casts)) }
+  | 'classdef' casts method_arg block
+    { $$ = yy._Method(merge({operator: '+', signature: $method_arg, block: $block}, $casts)) }
+  | 'def' method_arg block
+    { $$ = yy._Method({operator: '-', signature: $method_arg, block: $block}) }
+  | 'classdef' method_arg block
+    { $$ = yy._Method({operator: '+', signature: $method_arg, block: $block}) }
   ;
 
 method_arg
@@ -184,6 +192,8 @@ method_arg
 casts
   : '(' cast ')'
     { $$ = $cast }
+  | '(' simple_cast ')'
+    { $$ = $simple_cast }
   | simple_cast
   ;
 

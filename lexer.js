@@ -68,6 +68,8 @@ Lexer.prototype.fallbackToken = function () {
 
 Lexer.prototype.keywordToken = function () {
   var keywords = [
+    'classdef',
+    'def',
     'import',
     'if',
     'else'

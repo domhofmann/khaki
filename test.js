@@ -25,7 +25,3 @@ console.log(source);
 // console.log('\n\n=== tokenize ===>\n\n' + sys.inspect(new Lexer().tokenize(source)) + '\n\n');
 var compiled = parser.parse(new Lexer().tokenize(source));
 console.log('\n\n=== compiled ===>\n\n' + compiled + '\n');
-
-//console.log(source);
-//var lexer = new Lexer();
-//lexer.tokenize(source)

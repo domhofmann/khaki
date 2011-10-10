@@ -96,10 +96,12 @@ exports._Method = function (opts) {
   var signature = opts.signature;
   var block = opts.block;
   var type = opts.type || 'void';
+  var scalar = opts.scalar;
   
   return {
     type: type,
-    code: operator + ' ' + '(' + type + ')' + signature.args.join(' ') + ' {\n' + code(block) + '\n}'
+    scalar: scalar,
+    code: operator + ' ' + '(' + (!scalar ? type + ' *' : type)  + ')' + signature.args.join(' ') + ' {\n' + code(block) + '\n}'
   };
   
 };

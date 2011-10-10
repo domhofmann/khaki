@@ -1,5 +1,8 @@
-- printString:NSString stripWhitespace:BOOL~
----
+def (SomeType) printString:NSString stripWhitespace:BOOL~
+  NSLog(printString)
+  return yes
+
+classdef SomeType printString:NSString stripWhitespace:BOOL~
   NSLog(printString)
   return yes
 
