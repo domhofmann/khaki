@@ -1,11 +1,16 @@
 // helpers
 %{
-  
+
   String.prototype.capitalize = function() {
       return this.charAt(0).toUpperCase() + this.slice(1);
   }
   
+  Array.prototype.last = function () {
+    return this[this.length - 1];
+  }
+  
   var imports = ['#import <UIKit/UIKit.h>'];
+  var classes = [require('./types.js')._Class()];
   var scope = [[]];
 
   print = function (object) {
@@ -29,7 +34,7 @@
   }
   
   needsSemicolon = function (string) {
-    if (!string) return null;
+    if (!string || !(string instanceof String)) return null;
     return string.charAt(string.length - 1) != "}";
   }
   
@@ -45,6 +50,7 @@ program
   {{
     var deleteToken = new RegExp(DELETE + '.*\n', 'g');
     imports = imports.map(function (import) { return code(import) }).join('\n');
+    console.log(classes[0]);
     return imports + '\n\n' + code($body).replace(deleteToken, '');
   }}
   ;
@@ -52,6 +58,8 @@ program
 body
   : line
     {$$ = Array(scope.length).join('\t') + code($line)}
+  | meta
+  | body terminator meta
   | body terminator line
     {var c = code($body); $$ = code($body) + (needsSemicolon(c) ? ';' : '') + $terminator + Array(scope.length).join('\t') + code($line)}
   | body terminator
@@ -60,13 +68,18 @@ body
   
 importation
   : 'import' WORD
-  { imports.push(yy._Importation({framework: $WORD})); $$ = DELETE }
+  { imports.push(yy._Importation({framework: $WORD})) }
+  ;
+  
+meta
+  : importation
+  | class_def
+  | method_def
   ;
   
 line
   : expression
   | statement
-  | importation
   ;
 
 terminator
@@ -85,7 +98,6 @@ expression
   | construction
   | operation
   | If
-  | method_def
   | value
   | fallback
   ;
@@ -162,16 +174,21 @@ list
   | expression
     { $$ = [$expression] }
   ;
+  
+class_def
+  : 'class' WORD ':' WORD block
+    { classes.push(yy._Class()); $$ = $block }
+  ;
 
 method_def
   : 'def' casts method_arg block
-    { $$ = yy._Method(merge({operator: '-', signature: $method_arg, block: $block}, $casts)) }
-  | 'classdef' casts method_arg block
-    { $$ = yy._Method(merge({operator: '+', signature: $method_arg, block: $block}, $casts)) }
+    { $$ = yy._Method(merge({memberOf: classes.last(), operator: '-', signature: $method_arg, block: $block, indents: scope.length}, $casts)) }
+  | 'static' 'def' casts method_arg block
+    { $$ = yy._Method(merge({memberOf: classes.last(), operator: '+', signature: $method_arg, block: $block, indents: scope.length}, $casts)) }
   | 'def' method_arg block
-    { $$ = yy._Method({operator: '-', signature: $method_arg, block: $block}) }
-  | 'classdef' method_arg block
-    { $$ = yy._Method({operator: '+', signature: $method_arg, block: $block}) }
+    { $$ = yy._Method({memberOf: classes.last(), operator: '-', signature: $method_arg, block: $block, indents: scope.length}) }
+  | 'static' 'def' method_arg block
+    { $$ = yy._Method({memberOf: classes.last(), operator: '+', signature: $method_arg, block: $block, indents: scope.length}) }
   ;
 
 method_arg

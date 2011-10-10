@@ -1,38 +1,41 @@
-def (SomeType) printString:NSString stripWhitespace:BOOL~
-  NSLog(printString)
-  return yes
+class TestApp : UIViewController
+  
+  
+  def (SomeType) printString:NSString stripWhitespace:BOOL~
+    NSLog(printString)
+    return yes
 
-classdef SomeType printString:NSString stripWhitespace:BOOL~
-  NSLog(printString)
-  return yes
+  static def SomeType printString:NSString stripWhitespace:BOOL~
+    NSLog(printString)
+    return yes
 
-# variable assignment and autoreleased constructor
-someView = UIView!
+  # variable assignment and autoreleased constructor
+  someView = UIView!
 
-# selector invocation and CGRect shortcut
-someView setFrame:@(0, 0, 200, 200)
+  # selector invocation and CGRect shortcut
+  someView setFrame:@(0, 0, 200, 200)
 
-# conditionals, string literals, and nested selectors
-if someCondition
-  path = 'http://google.com'
-  req = NSURLRequest! withURL:(NSURL! withString:path)
-else
-  uppercase = 'THIS TEXT IS CAPITALIZED'
-  lowercase = capitalizedText lowercaseString
-  hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
+  # conditionals, string literals, and nested selectors
+  if someCondition
+    path = 'http://google.com'
+    req = NSURLRequest! withURL:(NSURL! withString:path)
+  else
+    uppercase = 'THIS TEXT IS CAPITALIZED'
+    lowercase = capitalizedText lowercaseString
+    hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
 
-# strict typing
-SomeType somePointer = SomeClass giveMeSomeType
-uint ~somePrimitive = 100
+  # strict typing
+  SomeType somePointer = SomeClass giveMeSomeType
+  uint ~somePrimitive = 100
 
-# import whenever you feel like it
-import AVFoundation
-recorder = AVAudioRecorder!
+  # import whenever you feel like it
+  import AVFoundation
+  recorder = AVAudioRecorder!
 
-# fallback to inline Objective-C if necessary
-foo = 'foo'
-`NSString *bar = @"bar"`
-baz = `[foo stringByAppendingString:bar]`
+  # fallback to inline Objective-C if necessary
+  foo = 'foo'
+  `NSString *bar = @"bar"`
+  baz = `[foo stringByAppendingString:bar]`
 
-# current status
-NSLog('Khaki is pre-pre-pre-alpha')
+  # current status
+  NSLog('Khaki is pre-pre-pre-alpha')

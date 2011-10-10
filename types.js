@@ -90,6 +90,14 @@ exports._Invocation = function (opts) {
   
 }
 
+exports._Class = function () {
+  return {
+    methods: [],
+    properties: [],
+    ivars: []
+  };
+}
+
 exports._Method = function (opts) {
 
   var operator = opts.operator;
@@ -97,12 +105,25 @@ exports._Method = function (opts) {
   var block = opts.block;
   var type = opts.type || 'void';
   var scalar = opts.scalar;
-  
-  return {
+  var indents = opts.indents || 0;
+  var memberOf = opts.memberOf;
+
+  var output = {
     type: type,
     scalar: scalar,
-    code: operator + ' ' + '(' + (!scalar ? type + ' *' : type)  + ')' + signature.args.join(' ') + ' {\n' + code(block) + '\n}'
+    interface: {
+      code: operator + ' ' + '(' + (!scalar ? type + ' *' : type)  + ')' + signature.args.join(' ') + ';'
+    },
+    implementation: { 
+      code: operator + ' ' + '(' + (!scalar ? type + ' *' : type)  + ')' + signature.args.join(' ') + ' {\n' + code(block) + '\n' + Array(indents).join('\t') + '}'
+    }
   };
+  
+  if (memberOf) {
+    memberOf.methods.push(output); 
+  }
+  
+  return output;
   
 };
 

@@ -46,6 +46,11 @@ Lexer.prototype.tokenize = function (code) {
       this.literalToken();
   }
   
+  while (this.indents.length > 0) {
+      if (this.lastToken() == 'NEWLINE') this.tokens.pop();
+    this.addToken('DEDENT', 'Dedent');
+    this.indents.pop();
+  }
   this.addToken('EOF', 'EOF');
   
   return this.tokens;
@@ -68,7 +73,8 @@ Lexer.prototype.fallbackToken = function () {
 
 Lexer.prototype.keywordToken = function () {
   var keywords = [
-    'classdef',
+    'class',
+    'static',
     'def',
     'import',
     'if',
@@ -201,7 +207,7 @@ Lexer.prototype.newlineToken = function () {
       // @TODO: Is this a hack?
       this.addToken('NEWLINE', 'Newline');
     } else { 
-      if (this.tokens[this.tokens.length - 1][0] != 'NEWLINE') this.addToken('NEWLINE', 'Newline');
+      if (this.lastToken() != 'NEWLINE' && this.lastToken() != 'INDENT') this.addToken('NEWLINE', 'Newline');
     }
     
     return result[0].length;
@@ -216,7 +222,7 @@ Lexer.prototype.newlineToken = function () {
     if (this.indent > 0) {
       this.indent = 0;
       while (this.indents.length > 0) {
-          if (this.tokens[this.tokens.length - 1][0] == 'NEWLINE') this.tokens.pop();
+          if (this.lastToken() == 'NEWLINE') this.tokens.pop();
         this.addToken('DEDENT', 'Dedent');
         this.indents.pop();
       }
