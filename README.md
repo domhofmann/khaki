@@ -2,7 +2,7 @@ Khaki is a shorthand language for iOS development.
 
 This:
 
-```ruby
+```coffee
 class TestApp : UIViewController
   
   def viewDidLoad
