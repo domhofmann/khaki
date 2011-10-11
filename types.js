@@ -90,8 +90,39 @@ exports._Invocation = function (opts) {
   
 }
 
-exports._Class = function () {
+exports._Interface = function (classObj) {
   return {
+    code:
+    
+    '@interface ' + classObj.name + ' : ' + classObj.superclass + '\n\n' +
+    classObj.methods.map(function (method) {
+      return '\t' + code(method.interface);
+    }).join('\n') +
+    '\n\n@end'
+    //@interface DecisionViewController : UIViewController
+    
+  }
+}
+
+exports._Implementation = function (classObj) {
+  return {
+    code: 
+    
+    '@implementation ' + classObj.name + '\n\n' +
+    classObj.methods.map(function (method) {
+      return '\t' + code(method.implementation);
+    }).join('\n\n') +
+    '\n\n@end'
+    
+  }
+}
+
+exports._Class = function () {
+  
+  return {
+    name: undefined,
+    superclass: undefined,
+    protocols: [],
     methods: [],
     properties: [],
     ivars: []
@@ -103,19 +134,29 @@ exports._Method = function (opts) {
   var operator = opts.operator;
   var signature = opts.signature;
   var block = opts.block;
-  var type = opts.type || 'void';
-  var scalar = opts.scalar;
+  
+  var type, scalar;
+  if (opts.type) {
+    type = opts.type;
+    scalar = opts.scalar;
+  } else {
+    type = 'void';
+    scalar = true;
+  }
+  
   var indents = opts.indents || 0;
   var memberOf = opts.memberOf;
+  
+  if (signature.args) signature = signature.args.join(' ');
 
   var output = {
     type: type,
     scalar: scalar,
     interface: {
-      code: operator + ' ' + '(' + (!scalar ? type + ' *' : type)  + ')' + signature.args.join(' ') + ';'
+      code: operator + ' ' + '(' + (!scalar ? type + ' *' : type)  + ')' + signature + ';'
     },
     implementation: { 
-      code: operator + ' ' + '(' + (!scalar ? type + ' *' : type)  + ')' + signature.args.join(' ') + ' {\n' + code(block) + '\n' + Array(indents).join('\t') + '}'
+      code: operator + ' ' + '(' + (!scalar ? type + ' *' : type)  + ')' + signature + ' {\n' + code(block) + '\n' + Array(indents).join('\t') + '}'
     }
   };
   

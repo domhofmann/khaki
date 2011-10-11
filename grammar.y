@@ -34,7 +34,6 @@
   }
   
   needsSemicolon = function (string) {
-    if (!string || !(string instanceof String)) return null;
     return string.charAt(string.length - 1) != "}";
   }
   
@@ -48,10 +47,16 @@
 program
   : body
   {{
-    var deleteToken = new RegExp(DELETE + '.*\n', 'g');
+    var deleteToken = new RegExp(DELETE + '.*\n*', 'g');
     imports = imports.map(function (import) { return code(import) }).join('\n');
-    console.log(classes[0]);
-    return imports + '\n\n' + code($body).replace(deleteToken, '');
+    //console.log(classes[0]);
+    //return imports + '\n\n' + code($body).replace(deleteToken, '');
+    
+    classes.pop();
+    return classes.map(function (classObj) {
+        return imports + '\n\n' + code(yy._Interface(classObj)) + '\n\n' + code(yy._Implementation(classObj));
+    }).join('\n\n');
+    
   }}
   ;
 
@@ -59,11 +64,12 @@ body
   : line
     {$$ = Array(scope.length).join('\t') + code($line)}
   | meta
+    { $$ = DELETE }
   | body terminator meta
   | body terminator line
-    {var c = code($body); $$ = code($body) + (needsSemicolon(c) ? ';' : '') + $terminator + Array(scope.length).join('\t') + code($line)}
+    { var c = code($body); $$ = c + (needsSemicolon(c) ? ';' : '') + $terminator + Array(scope.length).join('\t') + code($line) }
   | body terminator
-    {var c = code($body); $$ = code($body) + (needsSemicolon(c) ? ';' : '') + $terminator}
+    { var c = code($body); $$ = code($body) + (needsSemicolon(c) ? ';' : '') + $terminator }
   ;
   
 importation
@@ -90,15 +96,21 @@ terminator
   | EOF
     {$$ = ''}
   ;
+
+statement
+  : 'return' expression
+    { $$ = 'return ' + code($expression) }
+  ;
   
 expression
   : assignment
   | invocation
   | message
-  | construction
   | operation
+  | construction
   | If
   | value
+  | synonym
   | fallback
   ;
   
@@ -114,9 +126,9 @@ dedent
   
 block
   : indent dedent
-    {$$ = ''}
+    { $$ = '' }
   | indent body dedent
-    {var c = code($body); $$ = code($body) + (needsSemicolon(c) ? ';' : '')}
+    { var c = code($body); $$ = c + (needsSemicolon(c) ? ';' : '') }
   ;
   
 if_block
@@ -177,18 +189,26 @@ list
   
 class_def
   : 'class' WORD ':' WORD block
-    { classes.push(yy._Class()); $$ = $block }
+    { var c = classes.last(); c.name = $WORD1; c.superclass = $WORD2; classes.push(yy._Class()); $$ = $block }
   ;
 
 method_def
   : 'def' casts method_arg block
     { $$ = yy._Method(merge({memberOf: classes.last(), operator: '-', signature: $method_arg, block: $block, indents: scope.length}, $casts)) }
-  | 'static' 'def' casts method_arg block
-    { $$ = yy._Method(merge({memberOf: classes.last(), operator: '+', signature: $method_arg, block: $block, indents: scope.length}, $casts)) }
   | 'def' method_arg block
     { $$ = yy._Method({memberOf: classes.last(), operator: '-', signature: $method_arg, block: $block, indents: scope.length}) }
+  | 'def' casts WORD block
+    { $$ = yy._Method(merge({memberOf: classes.last(), operator: '-', signature: $WORD, block: $block, indents: scope.length}, $casts)) }
+  | 'def' WORD block
+    { $$ = yy._Method({memberOf: classes.last(), operator: '-', signature: $WORD, block: $block, indents: scope.length}) }
+  | 'static' 'def' casts method_arg block
+    { $$ = yy._Method(merge({memberOf: classes.last(), operator: '+', signature: $method_arg, block: $block, indents: scope.length}, $casts)) }
   | 'static' 'def' method_arg block
-    { $$ = yy._Method({memberOf: classes.last(), operator: '+', signature: $method_arg, block: $block, indents: scope.length}) }
+    { $$ = yy._Method({memberOf: classes.last(), operator: '+', signature: $method_arg, block: $block, indents: scope.length}) }  
+  | 'static' 'def' casts WORD block
+    { $$ = yy._Method(merge({memberOf: classes.last(), operator: '+', signature: $WORD, block: $block, indents: scope.length}, $casts)) }
+  | 'static' 'def' WORD block
+    { $$ = yy._Method({memberOf: classes.last(), operator: '+', signature: $WORD, block: $block, indents: scope.length}) }
   ;
 
 method_arg
@@ -262,9 +282,18 @@ selector_arg
   
 value
   : WORD
+  | property_chain
   | literal
   | parenthetical
   | cg_shortcut
+  | SYNONYM
+  ;
+  
+property_chain
+  : property_chain '.' WORD
+    { $$ = $property_chain + '.' + WORD2 }
+  | WORD '.' WORD
+    { $$ = $WORD1 + '.' + $WORD2 }
   ;
   
 fallback

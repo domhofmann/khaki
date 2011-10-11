@@ -1,41 +1,50 @@
 class TestApp : UIViewController
   
+  def viewDidLoad
   
-  def (SomeType) printString:NSString stripWhitespace:BOOL~
-    NSLog(printString)
+    # current status
+    NSLog('Khaki is pre-pre-pre-alpha')
+    
+    # implicit types
+    foo = 1
+    bar = 2.0
+    baz = 'hello'
+    point = @(100, 200)
+    rect = @(0, 0, 200, 200)
+    
+    # autoreleased instance
+    someView = UIView!
+
+    # selector invocation
+    someView setFrame:rect
+
+    # conditionals
+    if someCondition
+      path = 'http://google.com'
+      req = NSURLRequest! withURL:(NSURL! withString:path)
+    else
+      uppercase = 'THIS TEXT IS CAPITALIZED'
+      lowercase = capitalizedText lowercaseString
+      hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
+
+    # strict typing
+    MyClass myObject = MyClass!
+    uint ~myPrimitive = 100
+
+    # import whenever you feel like it
+    import AVFoundation
+    recorder = AVAudioRecorder!
+    
+    # call other methods
+    if TestApp isAlpha
+      self print:'Khaki is pre-pre-pre-alpha'
+
+    # fallback to inline Objective-C if necessary
+    `NSString *bar = @"bar"`
+    baz = `[foo stringByAppendingString:bar]`
+  
+  def print:NSString
+    NSLog('%@', printStatus)
+    
+  static def BOOL~ isAlpha
     return yes
-
-  static def SomeType printString:NSString stripWhitespace:BOOL~
-    NSLog(printString)
-    return yes
-
-  # variable assignment and autoreleased constructor
-  someView = UIView!
-
-  # selector invocation and CGRect shortcut
-  someView setFrame:@(0, 0, 200, 200)
-
-  # conditionals, string literals, and nested selectors
-  if someCondition
-    path = 'http://google.com'
-    req = NSURLRequest! withURL:(NSURL! withString:path)
-  else
-    uppercase = 'THIS TEXT IS CAPITALIZED'
-    lowercase = capitalizedText lowercaseString
-    hello = ('hello/world' componentsSeparatedByString:'/') objectAtIndex:2
-
-  # strict typing
-  SomeType somePointer = SomeClass giveMeSomeType
-  uint ~somePrimitive = 100
-
-  # import whenever you feel like it
-  import AVFoundation
-  recorder = AVAudioRecorder!
-
-  # fallback to inline Objective-C if necessary
-  foo = 'foo'
-  `NSString *bar = @"bar"`
-  baz = `[foo stringByAppendingString:bar]`
-
-  # current status
-  NSLog('Khaki is pre-pre-pre-alpha')

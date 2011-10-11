@@ -33,6 +33,7 @@ Lexer.prototype.tokenize = function (code) {
     i += 
       this.commentToken() ||
       this.fallbackToken() ||
+      this.synonymToken() ||
       this.keywordToken() ||
       this.selectorToken() ||
       this.wordToken() ||
@@ -71,8 +72,34 @@ Lexer.prototype.fallbackToken = function () {
   return result[0].length;
 }
 
+Lexer.prototype.synonymToken = function () {
+  var keywords = [
+    'yes',
+    'no'
+  ];
+
+  var match = new RegExp('^\ *(' + keywords.join('|') + ')\ *');
+  var result = match.exec(this.chunk);
+  if (!result) return 0;
+  
+  var keyword = result[1].replace(/\ */g, '');
+  
+  switch (keyword) {
+    case 'yes':
+      keyword = 'YES';
+      break;
+    case 'no':
+      keyword = 'NO';
+      break;
+  }
+  
+  this.addToken('SYNONYM', keyword);
+  return result[0].length;
+};
+
 Lexer.prototype.keywordToken = function () {
   var keywords = [
+    'return',
     'class',
     'static',
     'def',
@@ -178,7 +205,6 @@ Lexer.prototype.operatorToken = function () {
 };
 
 Lexer.prototype.selectorToken = function () {
-  //var result = /^ +([a-zA-Z]+\:{1})/.exec(this.chunk);
   var result = /^([a-zA-Z]+\:{1})/.exec(this.chunk);
   if (!result) return 0;
   
@@ -196,13 +222,27 @@ Lexer.prototype.newlineToken = function () {
     this.line += count(result[1], "\n");
     
     if (result[2].length > this.indent) {
+      
+      // @HACK: Clean up empty indented lines
+      if (this.lastToken() == 'NEWLINE') this.tokens.pop();
+      
       this.addToken('INDENT', 'Indent');
       this.indent = result[2].length;
       this.indents.push(this.indent);
     } else if (result[2].length < this.indent) {
-      this.addToken('DEDENT', 'Dedent');
-      this.indent = result[1].length;
-      this.indents.pop();
+      
+      var closestMatch = 0;
+      this.indents.forEach(function (indent) {
+        if (result[2].length >= indent) closestMatch = indent; 
+      });
+      
+      while (this.indents[this.indents.length - 1] > closestMatch) {
+          if (this.lastToken() == 'NEWLINE') this.tokens.pop();
+        this.addToken('DEDENT', 'Dedent');
+        this.indents.pop();
+      }
+      
+      this.indent = closestMatch;
       
       // @TODO: Is this a hack?
       this.addToken('NEWLINE', 'Newline');
@@ -251,9 +291,3 @@ Lexer.prototype.literalToken = function () {
   this.addToken(this.chunk.charAt(0), this.chunk.charAt(0));
   return 1;
 };
-
-/*
-var source = require('fs').readFileSync(require('path').join(process.cwd(), 'test2.khaki'), "utf8");
-var lexer = new Lexer();
-lexer.tokenize(source)
-*/
