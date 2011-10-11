@@ -53,6 +53,7 @@ class TestApp : UIViewController
     
   static def BOOL~ isAlpha
     return yes
+
 ```
 
 compiles to this:
